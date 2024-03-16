@@ -1333,7 +1333,7 @@ class QuickBooksMigratorCustom(Document):
 						"city": address.get("City"),
 						"links": [{"link_doctype": doctype, "link_name": entity.name}],
 					}
-				).insert()
+				).insert(ignore_mandatory=True)
 		except Exception as e:
 			self._log_error(e, address)
 
