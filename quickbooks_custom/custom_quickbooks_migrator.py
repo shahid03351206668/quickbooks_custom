@@ -553,14 +553,15 @@ class QuickBooksMigratorCustom(Document):
 				except Exception:
 					receivable_account = None
 
-				customer_name = encode_company_abbr(customer["DisplayName"], self.company)
-				customer_name = customer_name.replace(">", "")
-				customer_name = customer_name.replace("<", "")
+				# customer_name = encode_company_abbr(customer["DisplayName"], self.company)
+				# customer_name = str(customer_name).replace(">", "")
+				# customer_name = str(customer_name).replace("<", "")
+
 				erpcustomer = frappe.get_doc(
 					{
 						"doctype": "Customer",
 						"quickbooks_id": customer["Id"],
-						"customer_name": customer_name,
+						"customer_name": encode_company_abbr(customer["DisplayName"], self.company),
 						"customer_type": "Individual",
 						"customer_group": "Commercial",
 						"default_currency": customer["CurrencyRef"]["value"],
