@@ -1,4 +1,5 @@
 from . import __version__ as app_version
+from quickbooks_custom.custom_quickbooks_migrator import QuickBooksMigrator
 
 app_name = "quickbooks_custom"
 app_title = "Quickbooks Custom"
