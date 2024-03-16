@@ -68,7 +68,7 @@ class QuickBooksMigratorCustom(Document):
 
 	@frappe.whitelist()
 	def migrate(self):
-		frappe.enqueue_doc("QuickBooks Migrator", "QuickBooks Migrator", "_migrate", queue="long", timeout=1500)
+		frappe.enqueue_doc("QuickBooks Migrator", "QuickBooks Migrator", "_migrate", queue="long", timeout=4000)
 
 	def _migrate(self):
 		try:
@@ -538,9 +538,6 @@ class QuickBooksMigratorCustom(Document):
 
 	def _save_customer(self, customer):
 		try:
-			customer_name = encode_company_abbr(customer["DisplayName"], self.company)
-			customer_name = str(customer_name).replace(">", "")
-			customer_name = str(customer_name).replace("<", "")
 			if not frappe.db.exists(
 				{"doctype": "Customer", "quickbooks_id": customer["Id"], "company": self.company}
 			):
@@ -559,7 +556,7 @@ class QuickBooksMigratorCustom(Document):
 					{
 						"doctype": "Customer",
 						"quickbooks_id": customer["Id"],
-						"customer_name": customer_name,
+						"customer_name": encode_company_abbr(customer["DisplayName"], self.company),
 						"customer_type": "Individual",
 						"customer_group": "Commercial",
 						"default_currency": customer["CurrencyRef"]["value"],
