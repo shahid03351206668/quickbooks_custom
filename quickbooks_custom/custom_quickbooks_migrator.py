@@ -68,7 +68,7 @@ class QuickBooksMigratorCustom(Document):
 
 	@frappe.whitelist()
 	def migrate(self):
-		frappe.enqueue_doc("QuickBooks Migrator", "QuickBooks Migrator", "_migrate", queue="long")
+		frappe.enqueue_doc("QuickBooks Migrator", "QuickBooks Migrator", "_migrate", queue="long", timeout=1500)
 
 	def _migrate(self):
 		try:
