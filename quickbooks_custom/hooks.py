@@ -1,5 +1,5 @@
 from . import __version__ as app_version
-from quickbooks_custom.custom_quickbooks_migrator import QuickBooksMigrator
+# from quickbooks_custom.custom_quickbooks_migrator import QuickBooksMigrator
 
 app_name = "quickbooks_custom"
 app_title = "Quickbooks Custom"
@@ -111,10 +111,10 @@ app_license = "MIT"
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
+override_doctype_class = {
 # 	# "ToDo": "custom_app.overrides.CustomToDo"
-#     "QuickBooks Migrator": "quickbooks_custom.custom_quickbooks_migrator.QuickBooksMigratorCustom"
-# }
+    "QuickBooks Migrator": "quickbooks_custom.custom_quickbooks_migrator.QuickBooksMigratorCustom"
+}
 
 # Document Events
 # ---------------
