@@ -1294,11 +1294,11 @@ class QuickBooksMigratorCustom(Document):
 				frappe.get_doc(
 					{
 						"doctype": "Address",
-						"quickbooks_address_id": address["Id"],
+						"quickbooks_address_id": address.get("Id"),
 						"address_title": entity.name,
 						"address_type": address_type,
-						"address_line1": address["Line1"],
-						"city": address["City"],
+						"address_line1": address.get("Line1"),
+						"city": address.get("City"),
 						"links": [{"link_doctype": doctype, "link_name": entity.name}],
 					}
 				).insert()
