@@ -6,7 +6,7 @@ from erpnext.erpnext_integrations.doctype.quickbooks_migrator.quickbooks_migrato
 from frappe.model.document import Document
 
 class QuickBooksMigratorCustom(Document):
-	def _create_address(self, entity, doctype, address, address_type):
+	def create_address_custom(self, entity, doctype, address, address_type):
 		try:
 			if not frappe.db.exists({"doctype": "Address", "quickbooks_id": address.get("Id")}):
 				frappe.get_doc(
@@ -22,3 +22,60 @@ class QuickBooksMigratorCustom(Document):
 				).insert()
 		except Exception as e:
 			self._log_error(e, address)
+
+	def _save_customer(self, customer):
+		try:
+			if not frappe.db.exists(
+				{"doctype": "Customer", "quickbooks_id": customer["Id"], "company": self.company}
+			):
+				try:
+					receivable_account = frappe.get_all(
+						"Account",
+						filters={
+							"account_type": "Receivable",
+							"account_currency": customer["CurrencyRef"]["value"],
+							"company": self.company,
+						},
+					)[0]["name"]
+				except Exception:
+					receivable_account = None
+				erpcustomer = frappe.get_doc(
+					{
+						"doctype": "Customer",
+						"quickbooks_id": customer["Id"],
+						"customer_name": encode_company_abbr(customer["DisplayName"], self.company),
+						"customer_type": "Individual",
+						"customer_group": "Commercial",
+						"default_currency": customer["CurrencyRef"]["value"],
+						"accounts": [{"company": self.company, "account": receivable_account}],
+						"territory": "All Territories",
+						"company": self.company,
+					}
+				).insert()
+				if "BillAddr" in customer:
+					self.create_address_custom(erpcustomer, "Customer", customer["BillAddr"], "Billing")
+				if "ShipAddr" in customer:
+					self.create_address_custom(erpcustomer, "Customer", customer["ShipAddr"], "Shipping")
+		except Exception as e:
+			self._log_error(e, customer)
+
+	def _save_vendor(self, vendor):
+		try:
+			if not frappe.db.exists(
+				{"doctype": "Supplier", "quickbooks_id": vendor["Id"], "company": self.company}
+			):
+				erpsupplier = frappe.get_doc(
+					{
+						"doctype": "Supplier",
+						"quickbooks_id": vendor["Id"],
+						"supplier_name": encode_company_abbr(vendor["DisplayName"], self.company),
+						"supplier_group": "All Supplier Groups",
+						"company": self.company,
+					}
+				).insert()
+				if "BillAddr" in vendor:
+					self.create_address_custom(erpsupplier, "Supplier", vendor["BillAddr"], "Billing")
+				if "ShipAddr" in vendor:
+					self.create_address_custom(erpsupplier, "Supplier", vendor["ShipAddr"], "Shipping")
+		except Exception as e:
+			self._log_error(e)
