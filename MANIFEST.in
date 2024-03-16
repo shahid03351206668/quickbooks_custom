@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include quickbooks_custom *.css
+recursive-include quickbooks_custom *.csv
+recursive-include quickbooks_custom *.html
+recursive-include quickbooks_custom *.ico
+recursive-include quickbooks_custom *.js
+recursive-include quickbooks_custom *.json
+recursive-include quickbooks_custom *.md
+recursive-include quickbooks_custom *.png
+recursive-include quickbooks_custom *.py
+recursive-include quickbooks_custom *.svg
+recursive-include quickbooks_custom *.txt
+recursive-exclude quickbooks_custom *.pyc
